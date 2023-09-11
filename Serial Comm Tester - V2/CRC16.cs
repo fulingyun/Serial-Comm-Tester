@@ -32,7 +32,7 @@ namespace Serial_Comm_Tester
     {
         public ushort polynomial;
         // const ushort polynomial = 4129;
-        //public ushort polynomial = 0x1021; //standard crc16 ccitt
+        // public ushort polynomial = 0x1021; //standard crc16 ccitt
         // const ushort polynomial = 0x8408; //kermit
         // const ushort polynomial = 0xA097; //TELEDISK
         // const ushort polynomial = 0x8BB7; //T10_DIF
@@ -40,17 +40,17 @@ namespace Serial_Comm_Tester
         // const ushort polynomial = 0x8005; //DDS_110  / BUYPASS
         // const ushort polynomial = 0xC867;  //CDMA2000
         public ushort[] table = new ushort[256];
-        // static ushort initialValue = 0x0000;   //CRC-CCITT (XModem) /TELEDISK/
+        //  static ushort initialValue = 0x0000;   //CRC-CCITT (XModem) /TELEDISK/
         //  static ushort initialValue = 0xffff;  //CRC-CCITT (0xFFFF)
         //  static ushort initialValue = 0x1D0F;  //CRC-CCITT (0x1D0F)
-        //public ushort initialValue = 0x0000; //kermit  / BUYPASS
-        // static ushort initialValue = 0x800D; //DDS_110
-        // static ushort initialValue = 0xFFFF; //CDMA2000
+        //  public ushort initialValue = 0x0000; //kermit  / BUYPASS
+        //  static ushort initialValue = 0x800D; //DDS_110
+        //  static ushort initialValue = 0xFFFF; //CDMA2000
         public ushort initialValue;
 
         public static bool IsitModbus = false;
         // public int calcByte =  0x8000 ;
-       // public ushort calcByte { get; set; }
+        // public ushort calcByte { get; set; }
 
 
         public  ushort ComputeChecksum(byte[] bytes)

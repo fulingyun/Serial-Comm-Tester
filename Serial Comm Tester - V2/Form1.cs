@@ -34,6 +34,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Collections.Generic;
+using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace Serial_Comm_Tester
 {
@@ -74,7 +76,7 @@ namespace Serial_Comm_Tester
             //starts the system to look for available ports
             getAvailablePorts();
 
-
+            Control.CheckForIllegalCrossThreadCalls = false;
 
 
         }
@@ -290,9 +292,7 @@ namespace Serial_Comm_Tester
 
                         serialPort1.RtsEnable = true;
                         textBoxRTS.BackColor = Color.Lime;
-                        textBoxRTS.Text = "Rts ON";
-                        btnRtsOn.Enabled = false;
-                        btnRtsOff.Enabled = true;
+                        textBoxRTS.Text = "no test";
                     }
                     else
                     {
@@ -355,7 +355,7 @@ namespace Serial_Comm_Tester
                     //MODIFIED 24/01/17 COMMENTED OUT GOING FOR LABEL INSTEAD
                     //  richTextBox2.Text = "Serial Port Is Open";
 
-                    lblPortStatus.Text = "Port is Open";
+                    lblPortStatus.Text = "Open";
                     lblPortStatus.BackColor = Color.Lime;
 
                     richTextBoxRecieve.Text = "";
@@ -387,16 +387,15 @@ namespace Serial_Comm_Tester
 
                     btnDtrOn.Enabled = true;
                     btnRtsOn.Enabled = true;
-                    btnDtrOff.Enabled = false;
-                   
+                 
 
                     serialPort1.RtsEnable = false;
-                    textBoxRTS.BackColor = Color.Red;
-                    textBoxRTS.Text = "Rts Off";
+                    textBoxRTS.BackColor = Color.LightSkyBlue;
+                    textBoxRTS.Text = "no test";
 
-                    serialPort1.DtrEnable = false;
-                    textBoxDTR.BackColor = Color.Red;
-                    textBoxDTR.Text = "Dtr Off";
+                    serialPort1.DtrEnable = true;
+                    textBoxDTR.BackColor = Color.LightSkyBlue;
+                    textBoxDTR.Text = "no test";
 
                     //modified 24/01/17 disable COMBOboxes
                     comboBoxActiveComPorts.Enabled = false;
@@ -450,45 +449,45 @@ namespace Serial_Comm_Tester
                     if (serialPort1.DsrHolding == true)
                     {
                         textBoxDSR.BackColor = Color.Lime;
-                        textBoxDSR.Text = "Dsr On";
+                        textBoxDSR.Text = "no test";
                     }
                     else
                     {
                         textBoxDSR.BackColor = Color.LightSkyBlue;
-                        textBoxDSR.Text = "Dsr Off";
+                        textBoxDSR.Text = "no test";
                     }
 
                     if (serialPort1.CDHolding == true)
                     {
                         textBoxCD.BackColor = Color.Lime;
-                        textBoxCD.Text = "CD On";
+                        textBoxCD.Text = "testing";
                     }
                     else
                     {
                         textBoxCD.BackColor = Color.LightSkyBlue;
-                        textBoxCD.Text = "CD Off";
+                        textBoxCD.Text = "no test";
 
                     }
 
                     if (serialPort1.CtsHolding == true)
                     {
                         textBoxCTS.BackColor = Color.Lime;
-                        textBoxCTS.Text = "Cts On";
+                        textBoxCTS.Text = "testing";
                     }
                    else
                     {
                         textBoxCTS.BackColor = Color.LightSkyBlue;
-                        textBoxCTS.Text = "Cts Off";
+                        textBoxCTS.Text = "no test";
 
                     }
 
                     //this code gets the the serial ring value
                     //normally the ring only lasts a short time when activated like 2 seconds max
-                    textBoxRI.Text = "Ring";
+                    textBoxRI.Text = "no test";
                     textBoxRI.BackColor = Color.LightSkyBlue;
                   
                     //this code gets the current state of a break point if a break on the input is detected
-                    textBoxBI.Text = "Break";
+                    textBoxBI.Text = "no test";
                     if (serialPort1.BreakState)
                     {
                        
@@ -532,9 +531,9 @@ namespace Serial_Comm_Tester
                 if (comboBoxFlow.Text == "RTS/CTS")
                 {
                     serialPort1.RtsEnable = false;
-                    textBoxRTS.BackColor = Color.Red;
+                    textBoxRTS.BackColor = Color.LightSkyBlue;
                     // serialPort1.RtsEnable = false;  //---------------------------------------17/6/17
-                    textBoxRTS.Text = "Rts Off";
+                    textBoxRTS.Text = "no test";
                 }
 
                 richTextBoxSend.Enabled = false;
@@ -547,18 +546,18 @@ namespace Serial_Comm_Tester
                 {
                     serialPort1.DtrEnable = false;
                 }
-                textBoxRTS.BackColor = Color.Red;
+                textBoxRTS.BackColor = Color.LightSkyBlue;
                 // serialPort1.RtsEnable = false;  //---------------------------------------17/6/17
-                textBoxRTS.Text = "Rts Off";
+                textBoxRTS.Text = "no test";
 
-                textBoxDTR.BackColor = Color.Red;
-                textBoxDTR.Text = "Dtr Off";
+                textBoxDTR.BackColor = Color.LightSkyBlue;
+                textBoxDTR.Text = "no test";
                 textBoxDSR.BackColor = Color.LightSkyBlue;
-                textBoxDSR.Text = "Dsr Off";
+                textBoxDSR.Text = "no test";
                 textBoxCD.BackColor = Color.LightSkyBlue;
-                textBoxCD.Text = "CD Off";
+                textBoxCD.Text = "no test";
                 textBoxCTS.BackColor = Color.LightSkyBlue;
-                textBoxCTS.Text = "Cts Off";
+                textBoxCTS.Text = "no test";
 
                 RXcounter = 0;
                 TXcounter = 0;
@@ -653,7 +652,7 @@ namespace Serial_Comm_Tester
 
                     //MODIFIED 24/01/17 LABEL INSTEAD
                     //  richTextBox2.Text = "Serial Port Is Closed";
-                    lblPortStatus.Text = "Port is Closed";
+                    lblPortStatus.Text = "Closed";
                     lblPortStatus.BackColor = Color.Red;
 
                     textBoxRI.Text = "";
@@ -668,8 +667,6 @@ namespace Serial_Comm_Tester
                     //rts dtr buttons
                     btnRtsOn.Enabled = true;
                     btnDtrOn.Enabled = true;
-                    btnRtsOff.Enabled = false;
-                    btnDtrOff.Enabled = false;
                     chkBAutoRead.Checked = false;
                     checkBoxAutoSend.Checked = false;
                     chkBAutoRead.Enabled = false;
@@ -724,7 +721,7 @@ namespace Serial_Comm_Tester
             richTextBoxSend.Text = "";
             richTextBoxSend.Text = "COM Port Closed Unexpectedly";
 
-            lblPortStatus.Text = "Port is Closed";
+            lblPortStatus.Text = "Closed";
             lblPortStatus.BackColor = Color.Red;
 
             //  richTextBoxSend.Text = "";
@@ -740,22 +737,20 @@ namespace Serial_Comm_Tester
             richTextBoxSend.Enabled = false;
             btnRefreshComPorts.Enabled = true;
             textBoxRTS.BackColor = Color.Red;
-            textBoxRTS.Text = "Rts Off";
+            textBoxRTS.Text = "no test";
             serialPort1.DtrEnable = false;
             textBoxDTR.BackColor = Color.Red;
-            textBoxDTR.Text = "Dtr Off";
+            textBoxDTR.Text = "no test";
             //DTR AND RTS
             btnRtsOn.Enabled = true;
             btnDtrOn.Enabled = true;
-            btnRtsOff.Enabled = false;
-            btnDtrOff.Enabled = false;
 
             textBoxDSR.BackColor = Color.LightSkyBlue;
-            textBoxDSR.Text = "Dsr Off";
+            textBoxDSR.Text = "no test";
             textBoxCD.BackColor = Color.LightSkyBlue;
-            textBoxCD.Text = "CD Off";
+            textBoxCD.Text = "no test";
             textBoxCTS.BackColor = Color.LightSkyBlue;
-            textBoxCTS.Text = "Cts Off";
+            textBoxCTS.Text = "no test";
             chkBAutoRead.Checked = false;
             checkBoxAutoSend.Checked = false;
             chkBAutoRead.Enabled = false;
@@ -801,6 +796,7 @@ namespace Serial_Comm_Tester
         //this code writes whatever is in richtextbox1 to the serial port and then clears the textbox
         //this bastard was transfering return key as 0a hex
         private string comBoBoxformatText;
+        private string tx_data_p;
 
         private static bool DecSend = false;
 
@@ -814,9 +810,7 @@ namespace Serial_Comm_Tester
 
                 if (send_repeat_counter < (int)send_repeat.Value)
                 {
-
-
-                    tx_data = richTextBoxSend.Text;
+                    tx_data = tx_data_p;//richTextBoxSend.Text;
 
                     tXChartCount++;//tx chart values per interval
                     TXcounter++;
@@ -981,7 +975,7 @@ namespace Serial_Comm_Tester
                     if (ischeckBoxSendHexChecked == true)
                     {
 
-
+                        tx_data_p=richTextBoxSend.Text;
                         txRepeaterDelay.Interval = (int)send_delay.Value;
                         txRepeaterDelay.Start();
 
@@ -990,7 +984,7 @@ namespace Serial_Comm_Tester
                     if (ischeckBoxSendDecChecked == true)
                     {
 
-
+                        tx_data_p = richTextBoxSend.Text;
                         txRepeaterDelay.Interval = (int)send_delay.Value;
                         txRepeaterDelay.Start();
 
@@ -1003,7 +997,7 @@ namespace Serial_Comm_Tester
 
 
                         // SerialEncoding();
-
+                        tx_data_p = richTextBoxSend.Text;
                         txRepeaterDelay.Interval = (int)send_delay.Value;
                         txRepeaterDelay.Start();
 
@@ -1318,10 +1312,25 @@ namespace Serial_Comm_Tester
                         });
 
 
-                       // SerialEncoding();
+                        // SerialEncoding();
 
-                        serialPort1.Write(richTextBoxSend.Text);
+                        //serialPort1.Write(richTextBoxSend.Text);
+                        if (boolCarrigeReturnLF == true)
+                        {
+                            serialPort1.Write(richTextBoxSend.Text + "\r\n");
 
+                        }
+                        // serialPort1.Write(tx_data.Replace("\\n", Environment.NewLine));
+                        if (boolCarrigeReturn == true)
+                        {
+                            serialPort1.Write(richTextBoxSend.Text + "\r");
+
+                        }
+                        if (boolCarrigeReturn == false && boolCarrigeReturnLF == false)
+                        {
+                            serialPort1.Write(richTextBoxSend.Text);
+
+                        }
                         richTextBoxSend.Clear();
                         serialPort1.DiscardOutBuffer();
 
@@ -1388,63 +1397,796 @@ namespace Serial_Comm_Tester
         }
         private void btnRtsOn_Click(object sender, EventArgs e)
         {
-            // RTS cannot be accessed if readyToSend readyToSend xonxoff is enable etc..
-            if (comboBoxFlow.SelectedIndex != 3 && comboBoxFlow.SelectedIndex != 4)
+            send_repeat_counter = 0; //put this here as closing the form and reopening the form would dounble up on the send
+
+            sendDataNoError = true;
+
+            // SerialEncoding();
+
+            if (serialPort1.IsOpen)
             {
-                if (serialPort1.IsOpen && serialPort1.RtsEnable == false)
+                myAutoReplyDic = new Dictionary<string, string>();
+
+                try
+                {
+                    string[] strArr = File.ReadAllLines("mic.txt");
+
+                    lblIsAutoFileLoaded.Text = "mic.txt";
+                    lblAutoReplyLineCount.Text = strArr.Length.ToString();
+
+                    foreach (string str in strArr)
+                    {
+                        string[] strSplitter = str.Split(autoReplySplitterChar);
+
+                        if (strSplitter.Length == 2)
+                        {
+                            if (rBtnText.Checked)
+                            {
+                                if (myAutoReplyDic.ContainsKey(strSplitter[0]) == false)
+                                {
+                                    myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+                                    /*if (boolCarrigeReturnLF == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r\n", strSplitter[1]);
+
+                                    }
+                                    // serialPort1.Write(tx_data.Replace("\\n", Environment.NewLine));
+                                    if (boolCarrigeReturn == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r", strSplitter[1]);
+
+                                    }
+                                    if (boolCarrigeReturn == false && boolCarrigeReturnLF == false)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+
+                                    }*/
+                                }
+                            }
+                            else if (rBtnHex.Checked)
+                            {
+                                if (strSplitter[0].Length % 2 == 0 && strSplitter[1].Length % 2 == 0)
+                                {
+                                    string hexKey = "";
+                                    string hexValue = "";
+
+                                    //key
+                                    for (int i = 0; i < strSplitter[0].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[0].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexKey += s.ToString("X2");
+                                        }
+                                    }
+                                    //value
+                                    for (int i = 0; i < strSplitter[1].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[1].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexValue += s.ToString("X2");
+                                        }
+                                    }
+
+                                    if (myAutoReplyDic.ContainsKey(hexKey) == false)
+                                    {
+                                        myAutoReplyDic.Add(hexKey, hexValue);
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("The file does not contain formatted hex values..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("The file does not contain the char splitter between message and reply..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                    }
+
+                    if (myAutoReplyDic.Count > 0)
+                    {
+                        rBtnEnableAutoReply.Enabled = true;
+                        rBtnEnableAutoReply.Checked = true;
+                    }
+                }
+                catch (Exception ex)
                 {
 
-                    serialPort1.RtsEnable = true;
-                    textBoxRTS.BackColor = Color.Lime;
-                    textBoxRTS.Text = "Rts ON";
-                    btnRtsOn.Enabled = false;
-                    btnRtsOff.Enabled = true;
+                    MessageBox.Show("Error ::" + ex.Message, "Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
+                if (rBtnText.Checked)
+                {
+                    chkBAutoRead.Checked = true;
+                    tabControl2.SelectedIndex = 0;
+                    checkBoxSendNormal.Checked = true;
+                }
+                else if (rBtnHex.Checked)
+                {
+                    chkBAutoReadHex.Checked = true;
+                    tabControl2.SelectedIndex = 1;
+                    checkBoxSendHex.Checked = true;
+                }
+
+                tabControl1.SelectedIndex = 1;
             }
-            else
+
+            if (ischeckBox2DECChecked | ischeckBoxSendHexChecked)
             {
-                MessageBox.Show("Cannot enable RTS when using this Handshaking Flow control", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // MessageBox.Show("send is even");
+                DecSend = true;
             }
+            //  cout << "String length is even" << endl;
+            // else
+            if (ischeckBox3DECChecked)
+            {
+                //  MessageBox.Show("send is odd");
+                DecSend = false;
+            }
+            // cout << "String length is odd" 
+
+            //THIS IS USED TO CONVERT THE SEND TEXT TO HEX AND SEND THROUGH THE SERIAL PORT////////
+            if (serialPort1.IsOpen && btnRtsOn.Enabled)
+                try
+                {
+                    // SerialEncoding();
+
+                    if (ischeckBoxSendHexChecked == true)
+                    {
+
+                        tx_data_p = "mic";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                    //this writes decimal to the serial port
+                    if (ischeckBoxSendDecChecked == true)
+                    {
+
+                        tx_data_p = "mic";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+
+                    ////this allows access to the value of comboBox1 cross threading
+                    if (ischeckBoxSendHexChecked == false && ischeckBoxSendDecChecked == false)
+                    {
+
+                        // SerialEncoding();
+                        tx_data_p = "mic";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // ComPortClosed();
+                    // MessageBox.Show("if sending as hex use hex values example 01 not 1 by itself","Message for a newbie", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // richTextBox2.Text = "Unauthorized Access Exception Thrown";
+                    MessageBox.Show(ex.Message, "Message ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
 
 
+            if (!serialPort1.IsOpen)
+            {
+
+                ComPortClosed();
+
+            }
         }
 
         private void btnRtsOff_Click(object sender, EventArgs e)
         {
-            if (serialPort1.IsOpen && serialPort1.RtsEnable == true)
+            send_repeat_counter = 0; //put this here as closing the form and reopening the form would dounble up on the send
+
+            sendDataNoError = true;
+
+            // SerialEncoding();
+            if (serialPort1.IsOpen)
             {
-                serialPort1.RtsEnable = false;
-                textBoxRTS.BackColor = Color.Red;
-                textBoxRTS.Text = "Rts Off";
-                btnRtsOff.Enabled = false;
-                btnRtsOn.Enabled = true;
+                myAutoReplyDic = new Dictionary<string, string>();
+
+                try
+                {
+                    string[] strArr = File.ReadAllLines("info.txt");
+
+                    lblIsAutoFileLoaded.Text = "info.txt";
+                    lblAutoReplyLineCount.Text = strArr.Length.ToString();
+
+                    foreach (string str in strArr)
+                    {
+                        string[] strSplitter = str.Split(autoReplySplitterChar);
+
+                        if (strSplitter.Length == 2)
+                        {
+                            if (rBtnText.Checked)
+                            {
+                                if (myAutoReplyDic.ContainsKey(strSplitter[0]) == false)
+                                {
+                                    myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+                                    /*if (boolCarrigeReturnLF == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r\n", strSplitter[1]);
+
+                                    }
+                                    // serialPort1.Write(tx_data.Replace("\\n", Environment.NewLine));
+                                    if (boolCarrigeReturn == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r", strSplitter[1]);
+
+                                    }
+                                    if (boolCarrigeReturn == false && boolCarrigeReturnLF == false)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+
+                                    }*/
+                                }
+                            }
+                            else if (rBtnHex.Checked)
+                            {
+                                if (strSplitter[0].Length % 2 == 0 && strSplitter[1].Length % 2 == 0)
+                                {
+                                    string hexKey = "";
+                                    string hexValue = "";
+
+                                    //key
+                                    for (int i = 0; i < strSplitter[0].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[0].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexKey += s.ToString("X2");
+                                        }
+                                    }
+                                    //value
+                                    for (int i = 0; i < strSplitter[1].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[1].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexValue += s.ToString("X2");
+                                        }
+                                    }
+
+                                    if (myAutoReplyDic.ContainsKey(hexKey) == false)
+                                    {
+                                        myAutoReplyDic.Add(hexKey, hexValue);
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("The file does not contain formatted hex values..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("The file does not contain the char splitter between message and reply..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                    }
+
+                    if (myAutoReplyDic.Count > 0)
+                    {
+                        rBtnEnableAutoReply.Enabled = true;
+                        rBtnEnableAutoReply.Checked = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Error ::" + ex.Message, "Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (rBtnText.Checked)
+                {
+                    chkBAutoRead.Checked = true;
+                    tabControl2.SelectedIndex = 0;
+                    checkBoxSendNormal.Checked = true;
+                }
+                else if (rBtnHex.Checked)
+                {
+                    chkBAutoReadHex.Checked = true;
+                    tabControl2.SelectedIndex = 1;
+                    checkBoxSendHex.Checked = true;
+                }
+
+                tabControl1.SelectedIndex = 1;
+            }
+
+            if (ischeckBox2DECChecked | ischeckBoxSendHexChecked)
+            {
+                // MessageBox.Show("send is even");
+                DecSend = true;
+            }
+            //  cout << "String length is even" << endl;
+            // else
+            if (ischeckBox3DECChecked)
+            {
+                //  MessageBox.Show("send is odd");
+                DecSend = false;
+            }
+            // cout << "String length is odd" 
+
+            //THIS IS USED TO CONVERT THE SEND TEXT TO HEX AND SEND THROUGH THE SERIAL PORT////////
+            if (serialPort1.IsOpen && btnRtsOff.Enabled)
+                try
+                {
+                    // SerialEncoding();
+
+                    if (ischeckBoxSendHexChecked == true)
+                    {
+
+                        tx_data_p = "info";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                    //this writes decimal to the serial port
+                    if (ischeckBoxSendDecChecked == true)
+                    {
+
+                        tx_data_p = "info";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+
+                    ////this allows access to the value of comboBox1 cross threading
+                    if (ischeckBoxSendHexChecked == false && ischeckBoxSendDecChecked == false)
+                    {
+
+                        // SerialEncoding();
+                        tx_data_p = "info";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // ComPortClosed();
+                    // MessageBox.Show("if sending as hex use hex values example 01 not 1 by itself","Message for a newbie", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // richTextBox2.Text = "Unauthorized Access Exception Thrown";
+                    MessageBox.Show(ex.Message, "Message ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
+
+
+            if (!serialPort1.IsOpen)
+            {
+
+                ComPortClosed();
+
             }
         }
 
         private void btnDtrOn_Click(object sender, EventArgs e)
         {
-            if (serialPort1.IsOpen && serialPort1.DtrEnable == false)
+            send_repeat_counter = 0; //put this here as closing the form and reopening the form would dounble up on the send
+
+            sendDataNoError = true;
+
+            // SerialEncoding();
+            if (serialPort1.IsOpen)
+            {
+                myAutoReplyDic = new Dictionary<string, string>();
+
+                try
+                {
+                    string[] strArr = File.ReadAllLines("at.txt");
+
+                    lblIsAutoFileLoaded.Text = "at.txt";
+                    lblAutoReplyLineCount.Text = strArr.Length.ToString();
+
+                    foreach (string str in strArr)
+                    {
+                        string[] strSplitter = str.Split(autoReplySplitterChar);
+
+                        if (strSplitter.Length == 2)
+                        {
+                            if (rBtnText.Checked)
+                            {
+                                if (myAutoReplyDic.ContainsKey(strSplitter[0]) == false)
+                                {
+                                    myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+                                    /*if (boolCarrigeReturnLF == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r\n", strSplitter[1]);
+
+                                    }
+                                    // serialPort1.Write(tx_data.Replace("\\n", Environment.NewLine));
+                                    if (boolCarrigeReturn == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r", strSplitter[1]);
+
+                                    }
+                                    if (boolCarrigeReturn == false && boolCarrigeReturnLF == false)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+
+                                    }*/
+                                }
+                            }
+                            else if (rBtnHex.Checked)
+                            {
+                                if (strSplitter[0].Length % 2 == 0 && strSplitter[1].Length % 2 == 0)
+                                {
+                                    string hexKey = "";
+                                    string hexValue = "";
+
+                                    //key
+                                    for (int i = 0; i < strSplitter[0].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[0].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexKey += s.ToString("X2");
+                                        }
+                                    }
+                                    //value
+                                    for (int i = 0; i < strSplitter[1].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[1].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexValue += s.ToString("X2");
+                                        }
+                                    }
+
+                                    if (myAutoReplyDic.ContainsKey(hexKey) == false)
+                                    {
+                                        myAutoReplyDic.Add(hexKey, hexValue);
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("The file does not contain formatted hex values..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("The file does not contain the char splitter between message and reply..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                    }
+
+                    if (myAutoReplyDic.Count > 0)
+                    {
+                        rBtnEnableAutoReply.Enabled = true;
+                        rBtnEnableAutoReply.Checked = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Error ::" + ex.Message, "Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (rBtnText.Checked)
+                {
+                    chkBAutoRead.Checked = true;
+                    tabControl2.SelectedIndex = 0;
+                    checkBoxSendNormal.Checked = true;
+                }
+                else if (rBtnHex.Checked)
+                {
+                    chkBAutoReadHex.Checked = true;
+                    tabControl2.SelectedIndex = 1;
+                    checkBoxSendHex.Checked = true;
+                }
+
+                tabControl1.SelectedIndex = 1;
+            }
+
+            if (ischeckBox2DECChecked | ischeckBoxSendHexChecked)
+            {
+                // MessageBox.Show("send is even");
+                DecSend = true;
+            }
+            //  cout << "String length is even" << endl;
+            // else
+            if (ischeckBox3DECChecked)
+            {
+                //  MessageBox.Show("send is odd");
+                DecSend = false;
+            }
+            // cout << "String length is odd" 
+
+            //THIS IS USED TO CONVERT THE SEND TEXT TO HEX AND SEND THROUGH THE SERIAL PORT////////
+            if (serialPort1.IsOpen && btnDtrOn.Enabled)
+                try
+                {
+                    // SerialEncoding();
+
+                    if (ischeckBoxSendHexChecked == true)
+                    {
+
+                        tx_data_p = "at";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                    //this writes decimal to the serial port
+                    if (ischeckBoxSendDecChecked == true)
+                    {
+
+                        tx_data_p = "at";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+
+                    ////this allows access to the value of comboBox1 cross threading
+                    if (ischeckBoxSendHexChecked == false && ischeckBoxSendDecChecked == false)
+                    {
+
+                        // SerialEncoding();
+                        tx_data_p = "at";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // ComPortClosed();
+                    // MessageBox.Show("if sending as hex use hex values example 01 not 1 by itself","Message for a newbie", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // richTextBox2.Text = "Unauthorized Access Exception Thrown";
+                    MessageBox.Show(ex.Message, "Message ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
+
+
+            if (!serialPort1.IsOpen)
             {
 
-                serialPort1.DtrEnable = true;
-                textBoxDTR.BackColor = Color.Lime;
-                textBoxDTR.Text = "Dtr ON";
-                btnDtrOn.Enabled = false;
-                btnDtrOff.Enabled = true;
+                ComPortClosed();
+
             }
         }
 
         private void btnDtrOff_Click(object sender, EventArgs e)
         {
-            if (serialPort1.IsOpen && serialPort1.DtrEnable == true)
+            send_repeat_counter = 0; //put this here as closing the form and reopening the form would dounble up on the send
+
+            sendDataNoError = true;
+
+            // SerialEncoding();
+
+            if (serialPort1.IsOpen)
             {
-                serialPort1.DtrEnable = false;
-                textBoxDTR.BackColor = Color.Red;
-                textBoxDTR.Text = "Dtr Off";
-                btnDtrOff.Enabled = false;
-                btnDtrOn.Enabled = true;
+                myAutoReplyDic = new Dictionary<string, string>();
+
+                try
+                {
+                    string[] strArr = File.ReadAllLines("off.txt");
+
+                    lblIsAutoFileLoaded.Text = "off.txt";
+                    lblAutoReplyLineCount.Text = strArr.Length.ToString();
+
+                    foreach (string str in strArr)
+                    {
+                        string[] strSplitter = str.Split(autoReplySplitterChar);
+
+                        if (strSplitter.Length == 2)
+                        {
+                            if (rBtnText.Checked)
+                            {
+                                if (myAutoReplyDic.ContainsKey(strSplitter[0]) == false)
+                                {
+                                    myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+                                    /*if (boolCarrigeReturnLF == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r\n", strSplitter[1]);
+
+                                    }
+                                    // serialPort1.Write(tx_data.Replace("\\n", Environment.NewLine));
+                                    if (boolCarrigeReturn == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r", strSplitter[1]);
+
+                                    }
+                                    if (boolCarrigeReturn == false && boolCarrigeReturnLF == false)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+
+                                    }*/
+                                }
+                            }
+                            else if (rBtnHex.Checked)
+                            {
+                                if (strSplitter[0].Length % 2 == 0 && strSplitter[1].Length % 2 == 0)
+                                {
+                                    string hexKey = "";
+                                    string hexValue = "";
+
+                                    //key
+                                    for (int i = 0; i < strSplitter[0].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[0].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexKey += s.ToString("X2");
+                                        }
+                                    }
+                                    //value
+                                    for (int i = 0; i < strSplitter[1].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[1].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexValue += s.ToString("X2");
+                                        }
+                                    }
+
+                                    if (myAutoReplyDic.ContainsKey(hexKey) == false)
+                                    {
+                                        myAutoReplyDic.Add(hexKey, hexValue);
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("The file does not contain formatted hex values..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("The file does not contain the char splitter between message and reply..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                    }
+
+                    if (myAutoReplyDic.Count > 0)
+                    {
+                        rBtnEnableAutoReply.Enabled = true;
+                        rBtnEnableAutoReply.Checked = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Error ::" + ex.Message, "Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (rBtnText.Checked)
+                {
+                    chkBAutoRead.Checked = true;
+                    tabControl2.SelectedIndex = 0;
+                    checkBoxSendNormal.Checked = true;
+                }
+                else if (rBtnHex.Checked)
+                {
+                    chkBAutoReadHex.Checked = true;
+                    tabControl2.SelectedIndex = 1;
+                    checkBoxSendHex.Checked = true;
+                }
+
+                tabControl1.SelectedIndex = 1;
             }
+
+            if (ischeckBox2DECChecked | ischeckBoxSendHexChecked)
+            {
+                // MessageBox.Show("send is even");
+                DecSend = true;
+            }
+            //  cout << "String length is even" << endl;
+            // else
+            if (ischeckBox3DECChecked)
+            {
+                //  MessageBox.Show("send is odd");
+                DecSend = false;
+            }
+            // cout << "String length is odd" 
+
+            //THIS IS USED TO CONVERT THE SEND TEXT TO HEX AND SEND THROUGH THE SERIAL PORT////////
+            if (serialPort1.IsOpen && btnDtrOff.Enabled)
+                try
+                {
+                    // SerialEncoding();
+
+                    if (ischeckBoxSendHexChecked == true)
+                    {
+
+                        tx_data_p = "off";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                    //this writes decimal to the serial port
+                    if (ischeckBoxSendDecChecked == true)
+                    {
+
+                        tx_data_p = "off";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+
+                    ////this allows access to the value of comboBox1 cross threading
+                    if (ischeckBoxSendHexChecked == false && ischeckBoxSendDecChecked == false)
+                    {
+
+                        // SerialEncoding();
+                        tx_data_p = "off";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // ComPortClosed();
+                    // MessageBox.Show("if sending as hex use hex values example 01 not 1 by itself","Message for a newbie", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // richTextBox2.Text = "Unauthorized Access Exception Thrown";
+                    MessageBox.Show(ex.Message, "Message ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
+
+            if (!serialPort1.IsOpen)
+            {
+
+                ComPortClosed();
+
+            }
+ 
         }
 
 
@@ -2498,7 +3240,7 @@ namespace Serial_Comm_Tester
             }
         }
         //this will append the send data with a carrige return or not
-        private bool boolCarrigeReturnLF = false;
+        private bool boolCarrigeReturnLF = true;
         private void checkBoxCRLF_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBoxCRLF.Checked)
@@ -2959,6 +3701,43 @@ namespace Serial_Comm_Tester
            
         }
 
+        private void lblIsFileLoaded(string aReplyMessage)
+        {
+              
+            if (aReplyMessage == "wifi")
+            {
+                lblIsAutoFileLoaded.Text = "wifi.txt";
+            }
+            else if (aReplyMessage == "bt")
+            {
+                lblIsAutoFileLoaded.Text = "bt.txt";
+            }
+            else if (aReplyMessage == "key")
+            {
+                lblIsAutoFileLoaded.Text = "key.txt";
+            }
+            else if (aReplyMessage == "at")
+            {
+                lblIsAutoFileLoaded.Text = "at.txt";
+            }
+            else if (aReplyMessage == "mic")
+            {
+                lblIsAutoFileLoaded.Text = "mic.txt";
+            }
+            else if (aReplyMessage == "info")
+            {
+                lblIsAutoFileLoaded.Text = "info.txt";
+            }
+            else if (aReplyMessage == "off")
+            {
+                lblIsAutoFileLoaded.Text = "off.txt";
+            }
+            else if (aReplyMessage == "start")
+            {
+                lblIsAutoFileLoaded.Text = "start.txt";
+            }
+        }
+
         private void bgwAutoReply_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
          
@@ -3082,9 +3861,99 @@ namespace Serial_Comm_Tester
                     {
                         foreach (KeyValuePair<string, string> dic in myAutoReplyDic)
                         {
-                            if (autoReplyStringToMatch == dic.Key)
+                            //if (autoReplyStringToMatch == dic.Key)
+                            MatchCollection Matches = Regex.Matches(autoReplyStringToMatch, dic.Key, RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                            if(Matches.Count>0)
                             {
                                 autoReplyMessage = dic.Value;
+                                myAutoReplyDic.Remove(dic.Key);
+
+                                if (myAutoReplyDic.Count == 0 || autoReplyMessage.Substring(0,1) == "/")
+                                {
+                                    if (lblIsAutoFileLoaded.Text == "wifi.txt") { 
+                                        textBoxCD.Text = "test ok";
+                                        textBoxCD.BackColor = Color.Green;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "bt.txt")
+                                    {
+                                        textBoxDSR.Text = "test ok";
+                                        textBoxDSR.BackColor = Color.Green;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "key.txt")
+                                    {
+                                        textBoxCTS.Text = "test ok";
+                                        textBoxCTS.BackColor = Color.Green;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "at.txt")
+                                    {
+                                        textBoxRI.Text = "test ok";
+                                        textBoxRI.BackColor = Color.Green;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "mic.txt")
+                                    {
+                                        textBoxBI.Text = "test ok";
+                                        textBoxBI.BackColor = Color.Green;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "info.txt")
+                                    {
+                                        textBoxRTS.Text = "test ok";
+                                        textBoxRTS.BackColor = Color.Green;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "off.txt")
+                                    {
+                                        textBoxDTR.Text = "test ok";
+                                        textBoxDTR.BackColor = Color.Green;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "start.txt")
+                                    {
+                                        button8.Enabled = true;
+                                        button9.Enabled = true;
+                                        button7.BackColor = Color.Green;
+                                    }
+                                }
+                                else {
+                                    if (lblIsAutoFileLoaded.Text == "wifi.txt")
+                                    {
+                                        textBoxCD.Text = "testing";
+                                        textBoxCD.BackColor = Color.LightSkyBlue;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "bt.txt")
+                                    {
+                                        textBoxDSR.Text = "testing";
+                                        textBoxDSR.BackColor = Color.LightSkyBlue;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "key.txt")
+                                    {
+                                        textBoxCTS.Text = "testing";
+                                        textBoxCTS.BackColor = Color.LightSkyBlue;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "at.txt")
+                                    {
+                                        textBoxRI.Text = "testing";
+                                        textBoxRI.BackColor = Color.LightSkyBlue;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "mic.txt")
+                                    {
+                                        textBoxBI.Text = "testing";
+                                        textBoxBI.BackColor = Color.LightSkyBlue;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "info.txt")
+                                    {
+                                        textBoxRTS.Text = "testing";
+                                        textBoxRTS.BackColor = Color.LightSkyBlue;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "off.txt")
+                                    {
+                                        textBoxDTR.Text = "testing";
+                                        textBoxDTR.BackColor = Color.LightSkyBlue;
+                                    }
+                                    else if (lblIsAutoFileLoaded.Text == "start.txt")
+                                    {
+                                        button8.Enabled = false;
+                                        button9.Enabled = false;
+                                        button7.BackColor = Color.LightSkyBlue;
+                                    }
+                                }
                                 break;
                             }
 
@@ -3127,14 +3996,59 @@ namespace Serial_Comm_Tester
                 {
                     try
                     {
-                        serialPort1.Write(autoReplyMessage);
+                        //serialPort1.Write(autoReplyMessage);
+                        if (boolCarrigeReturnLF == true)
+                        {
+                            if (autoReplyMessage.Substring(0, 1) == "/")
+                            {
+                                serialPort1.Write("/\r\n");
+                                string tmp = autoReplyMessage.Remove(0, 1); //autoReplyMessage.Substring(autoReplyMessage.Length-1);
+                                serialPort1.Write(tmp + "\r\n");
+                                lblIsFileLoaded(tmp);
+                            }
+                            else 
+                            { 
+                                serialPort1.Write(autoReplyMessage + "\r\n");
+                            }
 
-                        
+                        }
+                        // serialPort1.Write(tx_data.Replace("\\n", Environment.NewLine));
+                        if (boolCarrigeReturn == true)
+                        {
+                            if (autoReplyMessage.Substring(0, 1) == "/")
+                            {
+                                serialPort1.Write("/\r");
+                                string tmp = autoReplyMessage.Remove(0, 1); //autoReplyMessage.Substring(autoReplyMessage.Length-1);
+                                serialPort1.Write(tmp + "\r");
+                                lblIsFileLoaded(tmp);
+                            }
+                            else
+                            {
+                                serialPort1.Write(autoReplyMessage + "\r");
+                            }
+
+                        }
+                        if (boolCarrigeReturn == false && boolCarrigeReturnLF == false)
+                        {
+                            if (autoReplyMessage.Substring(0, 1) == "/")
+                            {
+                                serialPort1.Write("/");
+                                string tmp = autoReplyMessage.Remove(0, 1); //autoReplyMessage.Substring(autoReplyMessage.Length-1);
+                                serialPort1.Write(tmp);
+                                lblIsFileLoaded(tmp);
+                            }
+                            else
+                            {
+                                serialPort1.Write(autoReplyMessage);
+                            }
+
+                        }
+
                     }
                     catch (Exception ex)
                     {
 
-
+                        MessageBox.Show(ex.Message, "Message ", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -3202,7 +4116,7 @@ namespace Serial_Comm_Tester
                             if (textBoxDSR.BackColor == Color.Lime)
                             {
                                 textBoxDSR.BackColor = Color.LightSkyBlue;
-                                textBoxDSR.Text = "Dsr Off";
+                                textBoxDSR.Text = "no test";
                             }
                             else
                             {
@@ -3224,7 +4138,7 @@ namespace Serial_Comm_Tester
                         if (textBoxDSR.BackColor == Color.Lime)
                         {
                             textBoxDSR.BackColor = Color.LightSkyBlue;
-                            textBoxDSR.Text = "Dsr Off";
+                            textBoxDSR.Text = "no test";
                         }
                         else
                         {
@@ -3252,12 +4166,12 @@ namespace Serial_Comm_Tester
                             if (textBoxCD.BackColor == Color.Lime)
                             {
                                 textBoxCD.BackColor = Color.LightSkyBlue;
-                                textBoxCD.Text = "CD Off";
+                                textBoxCD.Text = "no test";
                             }
                             else
                             {
                                 textBoxCD.BackColor = Color.Lime;
-                                textBoxCD.Text = "CD On";
+                                textBoxCD.Text = "test ok";
                             }
                         }
                         catch (Exception)
@@ -3274,12 +4188,12 @@ namespace Serial_Comm_Tester
                         if (textBoxCD.BackColor == Color.Lime)
                         {
                             textBoxCD.BackColor = Color.LightSkyBlue;
-                            textBoxCD.Text = "CD Off";
+                            textBoxCD.Text = "no test";
                         }
                         else
                         {
                             textBoxCD.BackColor = Color.Lime;
-                            textBoxCD.Text = "CD On";
+                            textBoxCD.Text = "test ok";
                         }
                     }
                     catch (Exception)
@@ -3302,12 +4216,12 @@ namespace Serial_Comm_Tester
                             if (textBoxCTS.BackColor == Color.Lime)
                             {
                                 textBoxCTS.BackColor = Color.LightSkyBlue;
-                                textBoxCTS.Text = "Cts Off";
+                                textBoxCTS.Text = "no test";
                             }
                             else
                             {
                                 textBoxCTS.BackColor = Color.Lime;
-                                textBoxCTS.Text = "Cts On";
+                                textBoxCTS.Text = "TEST OK";
                             }
                         }
                         catch (Exception)
@@ -3324,7 +4238,7 @@ namespace Serial_Comm_Tester
                         if (textBoxCTS.BackColor == Color.Lime)
                         {
                             textBoxCTS.BackColor = Color.LightSkyBlue;
-                            textBoxCTS.Text = "Cts Off";
+                            textBoxCTS.Text = "no test";
                         }
                         else
                         {
@@ -3424,6 +4338,1081 @@ namespace Serial_Comm_Tester
                 MessageBox.Show("SerialError ,The application tried to transmit a character but the ouput buffer was full", "Error.....", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             // ComPortClosed();
+        }
+
+        private void label22_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label18_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label35_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (serialPort1.IsOpen && serialPort1.DtrEnable == false)
+            {
+                serialPort1.DtrEnable = true;
+                button5.BackColor = Color.Lime;
+                button5.Text = "Dtr on";
+            }
+            else if (serialPort1.IsOpen && serialPort1.DtrEnable == true)
+            {
+                serialPort1.DtrEnable = false;
+                button5.BackColor = Color.Red;
+                button5.Text = "Dtr off";
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            send_repeat_counter = 0; //put this here as closing the form and reopening the form would dounble up on the send
+
+            sendDataNoError = true;
+
+            // SerialEncoding();
+
+            if (serialPort1.IsOpen)
+            {
+                myAutoReplyDic = new Dictionary<string, string>();
+
+                try
+                {
+                    string[] strArr = File.ReadAllLines("wifi.txt");
+
+                    lblIsAutoFileLoaded.Text = "wifi.txt";
+                    lblAutoReplyLineCount.Text = strArr.Length.ToString();
+
+                    foreach (string str in strArr)
+                    {
+                        string[] strSplitter = str.Split(autoReplySplitterChar);
+
+                        if (strSplitter.Length == 2)
+                        {
+                            if (rBtnText.Checked)
+                            {
+                                if (myAutoReplyDic.ContainsKey(strSplitter[0]) == false)
+                                {
+                                    myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+                                    /*if (boolCarrigeReturnLF == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r\n", strSplitter[1]);
+
+                                    }
+                                    // serialPort1.Write(tx_data.Replace("\\n", Environment.NewLine));
+                                    if (boolCarrigeReturn == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r", strSplitter[1]);
+
+                                    }
+                                    if (boolCarrigeReturn == false && boolCarrigeReturnLF == false)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+
+                                    }*/
+                                }
+                            }
+                            else if (rBtnHex.Checked)
+                            {
+                                if (strSplitter[0].Length % 2 == 0 && strSplitter[1].Length % 2 == 0)
+                                {
+                                    string hexKey = "";
+                                    string hexValue = "";
+
+                                    //key
+                                    for (int i = 0; i < strSplitter[0].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[0].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexKey += s.ToString("X2");
+                                        }
+                                    }
+                                    //value
+                                    for (int i = 0; i < strSplitter[1].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[1].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexValue += s.ToString("X2");
+                                        }
+                                    }
+
+                                    if (myAutoReplyDic.ContainsKey(hexKey) == false)
+                                    {
+                                        myAutoReplyDic.Add(hexKey, hexValue);
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("The file does not contain formatted hex values..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("The file does not contain the char splitter between message and reply..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                    }
+
+                    if (myAutoReplyDic.Count > 0)
+                    {
+                        rBtnEnableAutoReply.Enabled = true;
+                        rBtnEnableAutoReply.Checked = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Error ::" + ex.Message, "Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (rBtnText.Checked)
+                {
+                    chkBAutoRead.Checked = true;
+                    tabControl2.SelectedIndex = 0;
+                    checkBoxSendNormal.Checked = true;
+                }
+                else if (rBtnHex.Checked)
+                {
+                    chkBAutoReadHex.Checked = true;
+                    tabControl2.SelectedIndex = 1;
+                    checkBoxSendHex.Checked = true;
+                }
+
+                tabControl1.SelectedIndex = 1;
+            }
+
+            if (ischeckBox2DECChecked | ischeckBoxSendHexChecked)
+            {
+                // MessageBox.Show("send is even");
+                DecSend = true;
+            }
+            //  cout << "String length is even" << endl;
+            // else
+            if (ischeckBox3DECChecked)
+            {
+                //  MessageBox.Show("send is odd");
+                DecSend = false;
+            }
+            // cout << "String length is odd" 
+
+            //THIS IS USED TO CONVERT THE SEND TEXT TO HEX AND SEND THROUGH THE SERIAL PORT////////
+            if (serialPort1.IsOpen && button4.Enabled)
+                try
+                {
+                    // SerialEncoding();
+
+                    if (ischeckBoxSendHexChecked == true)
+                    {
+
+                        tx_data_p = "wifi";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                    //this writes decimal to the serial port
+                    if (ischeckBoxSendDecChecked == true)
+                    {
+
+                        tx_data_p = "wifi";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+
+                    ////this allows access to the value of comboBox1 cross threading
+                    if (ischeckBoxSendHexChecked == false && ischeckBoxSendDecChecked == false)
+                    {
+
+                        // SerialEncoding();
+                        tx_data_p = "wifi";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // ComPortClosed();
+                    // MessageBox.Show("if sending as hex use hex values example 01 not 1 by itself","Message for a newbie", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // richTextBox2.Text = "Unauthorized Access Exception Thrown";
+                    MessageBox.Show(ex.Message, "Message ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
+
+
+            if (!serialPort1.IsOpen)
+            {
+
+                ComPortClosed();
+
+            }
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            send_repeat_counter = 0; //put this here as closing the form and reopening the form would dounble up on the send
+
+            sendDataNoError = true;
+
+            // SerialEncoding();
+            if (serialPort1.IsOpen)
+            {
+                myAutoReplyDic = new Dictionary<string, string>();
+
+                try
+                {
+                    string[] strArr = File.ReadAllLines("bt.txt");
+
+                    lblIsAutoFileLoaded.Text = "bt.txt";
+                    lblAutoReplyLineCount.Text = strArr.Length.ToString();
+
+                    foreach (string str in strArr)
+                    {
+                        string[] strSplitter = str.Split(autoReplySplitterChar);
+
+                        if (strSplitter.Length == 2)
+                        {
+                            if (rBtnText.Checked)
+                            {
+                                if (myAutoReplyDic.ContainsKey(strSplitter[0]) == false)
+                                {
+                                    myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+                                    /*if (boolCarrigeReturnLF == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r\n", strSplitter[1]);
+
+                                    }
+                                    // serialPort1.Write(tx_data.Replace("\\n", Environment.NewLine));
+                                    if (boolCarrigeReturn == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r", strSplitter[1]);
+
+                                    }
+                                    if (boolCarrigeReturn == false && boolCarrigeReturnLF == false)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+
+                                    }*/
+                                }
+                            }
+                            else if (rBtnHex.Checked)
+                            {
+                                if (strSplitter[0].Length % 2 == 0 && strSplitter[1].Length % 2 == 0)
+                                {
+                                    string hexKey = "";
+                                    string hexValue = "";
+
+                                    //key
+                                    for (int i = 0; i < strSplitter[0].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[0].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexKey += s.ToString("X2");
+                                        }
+                                    }
+                                    //value
+                                    for (int i = 0; i < strSplitter[1].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[1].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexValue += s.ToString("X2");
+                                        }
+                                    }
+
+                                    if (myAutoReplyDic.ContainsKey(hexKey) == false)
+                                    {
+                                        myAutoReplyDic.Add(hexKey, hexValue);
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("The file does not contain formatted hex values..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("The file does not contain the char splitter between message and reply..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                    }
+
+                    if (myAutoReplyDic.Count > 0)
+                    {
+                        rBtnEnableAutoReply.Enabled = true;
+                        rBtnEnableAutoReply.Checked = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Error ::" + ex.Message, "Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (rBtnText.Checked)
+                {
+                    chkBAutoRead.Checked = true;
+                    tabControl2.SelectedIndex = 0;
+                    checkBoxSendNormal.Checked = true;
+                }
+                else if (rBtnHex.Checked)
+                {
+                    chkBAutoReadHex.Checked = true;
+                    tabControl2.SelectedIndex = 1;
+                    checkBoxSendHex.Checked = true;
+                }
+
+                tabControl1.SelectedIndex = 1;
+            }
+
+            if (ischeckBox2DECChecked | ischeckBoxSendHexChecked)
+            {
+                // MessageBox.Show("send is even");
+                DecSend = true;
+            }
+            //  cout << "String length is even" << endl;
+            // else
+            if (ischeckBox3DECChecked)
+            {
+                //  MessageBox.Show("send is odd");
+                DecSend = false;
+            }
+            // cout << "String length is odd" 
+
+            //THIS IS USED TO CONVERT THE SEND TEXT TO HEX AND SEND THROUGH THE SERIAL PORT////////
+            if (serialPort1.IsOpen && button3.Enabled)
+                try
+                {
+                    // SerialEncoding();
+
+                    if (ischeckBoxSendHexChecked == true)
+                    {
+
+                        tx_data_p = "bt";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                    //this writes decimal to the serial port
+                    if (ischeckBoxSendDecChecked == true)
+                    {
+
+                        tx_data_p = "bt";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+
+                    ////this allows access to the value of comboBox1 cross threading
+                    if (ischeckBoxSendHexChecked == false && ischeckBoxSendDecChecked == false)
+                    {
+
+                        // SerialEncoding();
+                        tx_data_p = "bt";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // ComPortClosed();
+                    // MessageBox.Show("if sending as hex use hex values example 01 not 1 by itself","Message for a newbie", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // richTextBox2.Text = "Unauthorized Access Exception Thrown";
+                    MessageBox.Show(ex.Message, "Message ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
+
+
+            if (!serialPort1.IsOpen)
+            {
+
+                ComPortClosed();
+
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            send_repeat_counter = 0; //put this here as closing the form and reopening the form would dounble up on the send
+
+            sendDataNoError = true;
+
+            // SerialEncoding();
+            if (serialPort1.IsOpen)
+            {
+                myAutoReplyDic = new Dictionary<string, string>();
+
+                try
+                {
+                    string[] strArr = File.ReadAllLines("key.txt");
+
+                    lblIsAutoFileLoaded.Text = "key.txt";
+                    lblAutoReplyLineCount.Text = strArr.Length.ToString();
+
+                    foreach (string str in strArr)
+                    {
+                        string[] strSplitter = str.Split(autoReplySplitterChar);
+
+                        if (strSplitter.Length == 2)
+                        {
+                            if (rBtnText.Checked)
+                            {
+                                if (myAutoReplyDic.ContainsKey(strSplitter[0]) == false)
+                                {
+                                    myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+                                    /*if (boolCarrigeReturnLF == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r\n", strSplitter[1]);
+
+                                    }
+                                    // serialPort1.Write(tx_data.Replace("\\n", Environment.NewLine));
+                                    if (boolCarrigeReturn == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r", strSplitter[1]);
+
+                                    }
+                                    if (boolCarrigeReturn == false && boolCarrigeReturnLF == false)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+
+                                    }*/
+                                }
+                            }
+                            else if (rBtnHex.Checked)
+                            {
+                                if (strSplitter[0].Length % 2 == 0 && strSplitter[1].Length % 2 == 0)
+                                {
+                                    string hexKey = "";
+                                    string hexValue = "";
+
+                                    //key
+                                    for (int i = 0; i < strSplitter[0].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[0].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexKey += s.ToString("X2");
+                                        }
+                                    }
+                                    //value
+                                    for (int i = 0; i < strSplitter[1].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[1].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexValue += s.ToString("X2");
+                                        }
+                                    }
+
+                                    if (myAutoReplyDic.ContainsKey(hexKey) == false)
+                                    {
+                                        myAutoReplyDic.Add(hexKey, hexValue);
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("The file does not contain formatted hex values..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("The file does not contain the char splitter between message and reply..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                    }
+
+                    if (myAutoReplyDic.Count > 0)
+                    {
+                        rBtnEnableAutoReply.Enabled = true;
+                        rBtnEnableAutoReply.Checked = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Error ::" + ex.Message, "Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (rBtnText.Checked)
+                {
+                    chkBAutoRead.Checked = true;
+                    tabControl2.SelectedIndex = 0;
+                    checkBoxSendNormal.Checked = true;
+                }
+                else if (rBtnHex.Checked)
+                {
+                    chkBAutoReadHex.Checked = true;
+                    tabControl2.SelectedIndex = 1;
+                    checkBoxSendHex.Checked = true;
+                }
+
+                tabControl1.SelectedIndex = 1;
+            }
+
+            if (ischeckBox2DECChecked | ischeckBoxSendHexChecked)
+            {
+                // MessageBox.Show("send is even");
+                DecSend = true;
+            }
+            //  cout << "String length is even" << endl;
+            // else
+            if (ischeckBox3DECChecked)
+            {
+                //  MessageBox.Show("send is odd");
+                DecSend = false;
+            }
+            // cout << "String length is odd" 
+
+            //THIS IS USED TO CONVERT THE SEND TEXT TO HEX AND SEND THROUGH THE SERIAL PORT////////
+            if (serialPort1.IsOpen && button2.Enabled)
+                try
+                {
+                    // SerialEncoding();
+
+                    if (ischeckBoxSendHexChecked == true)
+                    {
+
+                        tx_data_p = "sli";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                    //this writes decimal to the serial port
+                    if (ischeckBoxSendDecChecked == true)
+                    {
+
+                        tx_data_p = "sli";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+
+                    ////this allows access to the value of comboBox1 cross threading
+                    if (ischeckBoxSendHexChecked == false && ischeckBoxSendDecChecked == false)
+                    {
+
+                        // SerialEncoding();
+                        tx_data_p = "sli";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // ComPortClosed();
+                    // MessageBox.Show("if sending as hex use hex values example 01 not 1 by itself","Message for a newbie", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // richTextBox2.Text = "Unauthorized Access Exception Thrown";
+                    MessageBox.Show(ex.Message, "Message ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
+
+
+            if (!serialPort1.IsOpen)
+            {
+
+                ComPortClosed();
+
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            // RTS cannot be accessed if readyToSend readyToSend xonxoff is enable etc..
+            if (comboBoxFlow.SelectedIndex != 3 && comboBoxFlow.SelectedIndex != 4)
+            {
+                if (serialPort1.IsOpen && serialPort1.RtsEnable == false)
+                {
+
+                    serialPort1.RtsEnable = true;
+                    button6.BackColor = Color.Lime;
+                    button6.Text = "Cts on";
+                }
+                else if (serialPort1.IsOpen && serialPort1.RtsEnable == true)
+                {
+                    serialPort1.RtsEnable = false;
+                    button6.BackColor = Color.Red;
+                    button6.Text = "Cts off";
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Cannot enable RTS when using this Handshaking Flow control", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            send_repeat_counter = 0; //put this here as closing the form and reopening the form would dounble up on the send
+            sendDataNoError = true;
+
+            // SerialEncoding();
+            if (serialPort1.IsOpen)
+            {
+                myAutoReplyDic = new Dictionary<string, string>();
+
+                try
+                {
+                    string[] strArr = File.ReadAllLines("start.txt");
+
+                    lblIsAutoFileLoaded.Text = "start.txt";
+                    lblAutoReplyLineCount.Text = strArr.Length.ToString();
+
+                    foreach (string str in strArr)
+                    {
+                        string[] strSplitter = str.Split(autoReplySplitterChar);
+
+                        if (strSplitter.Length == 2)
+                        {
+                            if (rBtnText.Checked)
+                            {
+                                if (myAutoReplyDic.ContainsKey(strSplitter[0]) == false)
+                                {
+                                    myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+                                    /*if (boolCarrigeReturnLF == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r\n", strSplitter[1]);
+
+                                    }
+                                    // serialPort1.Write(tx_data.Replace("\\n", Environment.NewLine));
+                                    if (boolCarrigeReturn == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r", strSplitter[1]);
+
+                                    }
+                                    if (boolCarrigeReturn == false && boolCarrigeReturnLF == false)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+
+                                    }*/
+                                }
+                            }
+                            else if (rBtnHex.Checked)
+                            {
+                                if (strSplitter[0].Length % 2 == 0 && strSplitter[1].Length % 2 == 0)
+                                {
+                                    string hexKey = "";
+                                    string hexValue = "";
+
+                                    //key
+                                    for (int i = 0; i < strSplitter[0].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[0].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexKey += s.ToString("X2");
+                                        }
+                                    }
+                                    //value
+                                    for (int i = 0; i < strSplitter[1].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[1].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexValue += s.ToString("X2");
+                                        }
+                                    }
+
+                                    if (myAutoReplyDic.ContainsKey(hexKey) == false)
+                                    {
+                                        myAutoReplyDic.Add(hexKey, hexValue);
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("The file does not contain formatted hex values..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("The file does not contain the char splitter between message and reply..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                    }
+
+                    if (myAutoReplyDic.Count > 0)
+                    {
+                        rBtnEnableAutoReply.Enabled = true;
+                        rBtnEnableAutoReply.Checked = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Error ::" + ex.Message, "Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (rBtnText.Checked)
+                {
+                    chkBAutoRead.Checked = true;
+                    tabControl2.SelectedIndex = 0;
+                    checkBoxSendNormal.Checked = true;
+                }
+                else if (rBtnHex.Checked)
+                {
+                    chkBAutoReadHex.Checked = true;
+                    tabControl2.SelectedIndex = 1;
+                    checkBoxSendHex.Checked = true;
+                }
+
+                tabControl1.SelectedIndex = 1;
+            }
+
+            if (ischeckBox2DECChecked | ischeckBoxSendHexChecked)
+            {
+                // MessageBox.Show("send is even");
+                DecSend = true;
+            }
+            //  cout << "String length is even" << endl;
+            // else
+            if (ischeckBox3DECChecked)
+            {
+                //  MessageBox.Show("send is odd");
+                DecSend = false;
+            }
+            // cout << "String length is odd" 
+
+            //THIS IS USED TO CONVERT THE SEND TEXT TO HEX AND SEND THROUGH THE SERIAL PORT////////
+            if (serialPort1.IsOpen && button7.Enabled)
+                try
+                {
+                    // SerialEncoding();
+
+                    if (ischeckBoxSendHexChecked == true)
+                    {
+
+                        tx_data_p = "cli";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                    //this writes decimal to the serial port
+                    if (ischeckBoxSendDecChecked == true)
+                    {
+
+                        tx_data_p = "cli";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+
+                    ////this allows access to the value of comboBox1 cross threading
+                    if (ischeckBoxSendHexChecked == false && ischeckBoxSendDecChecked == false)
+                    {
+
+                        // SerialEncoding();
+                        tx_data_p = "cli";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // ComPortClosed();
+                    // MessageBox.Show("if sending as hex use hex values example 01 not 1 by itself","Message for a newbie", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // richTextBox2.Text = "Unauthorized Access Exception Thrown";
+                    MessageBox.Show(ex.Message, "Message ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
+
+
+            if (!serialPort1.IsOpen)
+            {
+
+                ComPortClosed();
+
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            /*button4_Click(sender, e);
+            System.Threading.Thread.Sleep(rxDelayTime);
+            button3_Click(sender, e);
+            System.Threading.Thread.Sleep(rxDelayTime);
+            button2_Click(sender, e);
+            System.Threading.Thread.Sleep(rxDelayTime);
+            btnDtrOn_Click(sender, e);
+            System.Threading.Thread.Sleep(rxDelayTime);
+            btnRtsOn_Click(sender, e);
+            System.Threading.Thread.Sleep(rxDelayTime);
+            btnRtsOff_Click(sender, e);
+            System.Threading.Thread.Sleep(rxDelayTime);
+            btnDtrOff_Click(sender, e);*/
+
+            send_repeat_counter = 0; //put this here as closing the form and reopening the form would dounble up on the send
+            sendDataNoError = true;
+
+            if (serialPort1.IsOpen)
+            {
+                myAutoReplyDic = new Dictionary<string, string>();
+
+                try
+                {
+                    string[] strArr = File.ReadAllLines("runall.txt");
+
+                    lblIsAutoFileLoaded.Text = "wifi.txt";
+                    lblAutoReplyLineCount.Text = strArr.Length.ToString();
+
+                    foreach (string str in strArr)
+                    {
+                        string[] strSplitter = str.Split(autoReplySplitterChar);
+
+                        if (strSplitter.Length == 2)
+                        {
+                            if (rBtnText.Checked)
+                            {
+                                if (myAutoReplyDic.ContainsKey(strSplitter[0]) == false)
+                                {
+                                    myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+                                    /*if (boolCarrigeReturnLF == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r\n", strSplitter[1]);
+
+                                    }
+                                    // serialPort1.Write(tx_data.Replace("\\n", Environment.NewLine));
+                                    if (boolCarrigeReturn == true)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0] + "\r", strSplitter[1]);
+
+                                    }
+                                    if (boolCarrigeReturn == false && boolCarrigeReturnLF == false)
+                                    {
+                                        myAutoReplyDic.Add(strSplitter[0], strSplitter[1]);
+
+                                    }*/
+                                }
+                            }
+                            else if (rBtnHex.Checked)
+                            {
+                                if (strSplitter[0].Length % 2 == 0 && strSplitter[1].Length % 2 == 0)
+                                {
+                                    string hexKey = "";
+                                    string hexValue = "";
+
+                                    //key
+                                    for (int i = 0; i < strSplitter[0].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[0].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexKey += s.ToString("X2");
+                                        }
+                                    }
+                                    //value
+                                    for (int i = 0; i < strSplitter[1].Length; i++)
+                                    {
+
+                                        int s;
+                                        bool isHex = int.TryParse(strSplitter[1].Substring(i, 2), System.Globalization.NumberStyles.HexNumber, null, out s);
+                                        i++;
+
+                                        if (isHex)
+                                        {
+                                            hexValue += s.ToString("X2");
+                                        }
+                                    }
+
+                                    if (myAutoReplyDic.ContainsKey(hexKey) == false)
+                                    {
+                                        myAutoReplyDic.Add(hexKey, hexValue);
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("The file does not contain formatted hex values..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            MessageBox.Show("The file does not contain the char splitter between message and reply..", "File Format Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                    }
+
+                    if (myAutoReplyDic.Count > 0)
+                    {
+                        rBtnEnableAutoReply.Enabled = true;
+                        rBtnEnableAutoReply.Checked = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Error ::" + ex.Message, "Error....", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (rBtnText.Checked)
+                {
+                    chkBAutoRead.Checked = true;
+                    tabControl2.SelectedIndex = 0;
+                    checkBoxSendNormal.Checked = true;
+                }
+                else if (rBtnHex.Checked)
+                {
+                    chkBAutoReadHex.Checked = true;
+                    tabControl2.SelectedIndex = 1;
+                    checkBoxSendHex.Checked = true;
+                }
+
+                tabControl1.SelectedIndex = 1;
+            }
+
+            if (ischeckBox2DECChecked | ischeckBoxSendHexChecked)
+            {
+                // MessageBox.Show("send is even");
+                DecSend = true;
+            }
+            //  cout << "String length is even" << endl;
+            // else
+            if (ischeckBox3DECChecked)
+            {
+                //  MessageBox.Show("send is odd");
+                DecSend = false;
+            }
+            // cout << "String length is odd" 
+
+            //THIS IS USED TO CONVERT THE SEND TEXT TO HEX AND SEND THROUGH THE SERIAL PORT////////
+            if (serialPort1.IsOpen && button4.Enabled)
+                try
+                {
+                    // SerialEncoding();
+
+                    if (ischeckBoxSendHexChecked == true)
+                    {
+
+                        tx_data_p = "wifi";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                    //this writes decimal to the serial port
+                    if (ischeckBoxSendDecChecked == true)
+                    {
+
+                        tx_data_p = "wifi";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+
+                    ////this allows access to the value of comboBox1 cross threading
+                    if (ischeckBoxSendHexChecked == false && ischeckBoxSendDecChecked == false)
+                    {
+
+                        // SerialEncoding();
+                        tx_data_p = "wifi";
+                        txRepeaterDelay.Interval = (int)send_delay.Value;
+                        txRepeaterDelay.Start();
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // ComPortClosed();
+                    // MessageBox.Show("if sending as hex use hex values example 01 not 1 by itself","Message for a newbie", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // richTextBox2.Text = "Unauthorized Access Exception Thrown";
+                    MessageBox.Show(ex.Message, "Message ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
+
+
+            if (!serialPort1.IsOpen)
+            {
+
+                ComPortClosed();
+
+            }
+
+        }
+
+        private void textBoxDTR_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            if (bgwAutoReply.IsBusy == false)
+            {
+                bgwAutoReply.CancelAsync();
+            }
         }
     }
 }
